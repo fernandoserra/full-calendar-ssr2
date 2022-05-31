@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/full-calendar-ssr2",
+            "outputPath": "dist/full-calendar-ssr2/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -28,9 +28,12 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/@fullcalendar/core/main.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/@fullcalendar/core/main.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -120,6 +123,53 @@
             "production": {
               "devServerTarget": "full-calendar-ssr2:serve:production"
             }
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/full-calendar-ssr2/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": true
+            }
+          }
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "options": {
+            "browserTarget": "full-calendar-ssr2:build",
+            "serverTarget": "full-calendar-ssr2:server"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "full-calendar-ssr2:build:production",
+              "serverTarget": "full-calendar-ssr2:server:production"
+            }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "full-calendar-ssr2:build:production",
+            "serverTarget": "full-calendar-ssr2:server:production",
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {}
           }
         }
       }
